@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marco Tracker</title>
+    <meta name="description" content="Track and unlock Marco's eight shirt colors." />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316203a'/%3E%3Cpath d='M20 16l8 7h8l8-7 10 9-7 9-4-3v19H21V31l-4 3-7-9 10-9z' fill='%23f5f1e8'/%3E%3Cpath d='M28 23h8l-4 7-4-7z' fill='%23db4d3f'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="auth-screen" id="auth-screen" aria-labelledby="auth-title">
+      <div class="auth-card">
+        <p class="eyebrow">Marco Tracker</p>
+        <h1 id="auth-title">Sign in before the hunt starts.</h1>
+        <p>Use a username and password for this friend-group prototype. Your collection is saved under that account on this device.</p>
+
+        <div class="auth-toggle" role="group" aria-label="Choose account mode">
+          <button class="auth-toggle-button active" type="button" data-auth-mode="signin">Sign in</button>
+          <button class="auth-toggle-button" type="button" data-auth-mode="create">Create account</button>
+        </div>
+
+        <form class="auth-form" id="auth-form">
+          <label for="username">Username</label>
+          <input id="username" name="username" autocomplete="username" placeholder="marco_scout" required />
+
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="shirtclub" required />
+
+          <button class="primary-action" type="submit" id="auth-submit">Sign in</button>
+          <p class="auth-message" id="auth-message" role="status"></p>
+        </form>
+      </div>
+    </section>
+
+    <main class="app-shell">
+      <section class="top-panel" aria-labelledby="app-title">
+        <div>
+          <p class="eyebrow">Marco Tracker</p>
+          <h1 id="app-title">Eight shirts. One suspiciously consistent wardrobe.</h1>
+        </div>
+        <div class="account-pill">
+          <span id="active-user">Signed out</span>
+          <button type="button" id="signout-button">Sign out</button>
+        </div>
+      </section>
+
+      <nav class="tabs" aria-label="Marco Tracker views">
+        <button class="tab-button active" type="button" data-view="home">Home</button>
+        <button class="tab-button" type="button" data-view="scan">Scan</button>
+        <button class="tab-button" type="button" data-view="collection">Collection</button>
+        <button class="tab-button" type="button" data-view="leaderboard">Board</button>
+      </nav>
+
+      <section class="view active" id="home-view" aria-labelledby="home-title">
+        <div class="home-grid">
+          <div class="progress-area">
+            <div>
+              <p class="section-kicker">Your progress</p>
+              <h2 id="home-title"><span id="unlocked-count">0</span> of 8 Marco shirts unlocked</h2>
+            </div>
+            <div class="shirt-meter" aria-label="Shirt progress meter using Marco shirt image">
+              <div class="shirt-image-fill">
+                <div class="shirt-stripes" id="shirt-fill"></div>
+              </div>
+            </div>
+            <div class="color-line" id="color-line" aria-label="Scanned shirt color line"></div>
+            <p class="helper-text" id="home-helper">Scan colors to fill Marco's shirt one line at a time.</p>
+          </div>
+
+          <div class="action-panel">
+            <div>
+              <p class="section-kicker">Next move</p>
+              <h2>Scan when Marco walks in.</h2>
+              <p>Start the camera, center the shirt, and capture a color sample. Torch turns on automatically when the phone supports it.</p>
+            </div>
+            <button class="primary-action" type="button" data-view-jump="scan">Open scanner</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="scan-view" aria-labelledby="scan-title">
+        <div class="scanner-layout">
+          <div class="camera-card">
+            <div class="camera-frame">
+              <video id="camera-video" playsinline muted></video>
+              <canvas id="capture-canvas" width="96" height="96" aria-hidden="true"></canvas>
+              <div class="focus-box"></div>
+              <p id="camera-placeholder">Camera preview</p>
+            </div>
+            <div class="scan-status">
+              <span class="status-dot" id="camera-dot"></span>
+              <span id="camera-status">Camera not started</span>
+            </div>
+          </div>
+          <div class="scan-controls">
+            <p class="section-kicker">Scanner</p>
+            <h2 id="scan-title">Center Marco's shirt.</h2>
+            <p>The app samples the middle of the camera frame, matches it to the closest shirt style, and saves the unlock to the backend.</p>
+            <div class="camera-actions">
+              <button class="primary-action" type="button" id="start-camera">Start camera</button>
+              <button class="secondary-action" type="button" id="capture-shirt" disabled>Capture scan</button>
+              <button class="secondary-action" type="button" id="stop-camera" disabled>Stop</button>
+            </div>
+            <p class="scan-result" id="scan-result" role="status"></p>
+            <p class="manual-label">Manual fallback</p>
+            <div class="swatch-grid" id="scan-options"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="collection-view" aria-labelledby="collection-title">
+        <div class="section-heading">
+          <p class="section-kicker">Collection</p>
+          <h2 id="collection-title">Marco shirt styles</h2>
+        </div>
+        <div class="collection-grid" id="collection-grid"></div>
+      </section>
+
+      <section class="view" id="leaderboard-view" aria-labelledby="leaderboard-title">
+        <div class="section-heading">
+          <p class="section-kicker">Leaderboard</p>
+          <h2 id="leaderboard-title">Friend group standings</h2>
+        </div>
+        <div class="leaderboard" id="leaderboard"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
